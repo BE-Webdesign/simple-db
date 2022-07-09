@@ -6,3 +6,5 @@ mod tests {
         assert_eq!(result, 4);
     }
 }
+
+pub const GREETING: &'static str = "Hallo, Rust library here!";
