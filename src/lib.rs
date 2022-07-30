@@ -12,7 +12,7 @@ pub enum GrammarItem {
     Product,
     Sum,
     Number(u64),
-    Paren
+    Paren,
 }
 
 #[derive(Debug, Clone)]
@@ -28,6 +28,13 @@ impl ParseNode {
             entry: GrammarItem::Paren,
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub enum LexItem {
+    Paren(char),
+    Op(char),
+    Num(u64),
 }
 
 pub const GREETING: &'static str = "Hallo, Rust library here!\n";
