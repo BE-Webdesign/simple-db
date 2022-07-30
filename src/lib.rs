@@ -7,4 +7,12 @@ mod tests {
     }
 }
 
+#[derive(Debug, Clone)]
+pub enum GrammarItem {
+    Product,
+    Sum,
+    Number(u64),
+    Paren
+}
+
 pub const GREETING: &'static str = "Hallo, Rust library here!\n";
