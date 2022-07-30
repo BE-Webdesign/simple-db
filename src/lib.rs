@@ -2,10 +2,24 @@ use std::iter::Peekable;
 
 #[cfg(test)]
 mod tests {
+    use crate::get_number;
+
     #[test]
     fn it_works() {
         let result = 2 + 2;
         assert_eq!(result, 4);
+    }
+
+    #[test]
+    fn get_number_works() {
+        let mut iter = "99".chars().peekable();
+
+        if let Some(&c) = iter.peek() {
+            iter.next();
+            let num = get_number( c, &mut iter );
+
+            assert_eq!(num, 99);
+        }
     }
 }
 
