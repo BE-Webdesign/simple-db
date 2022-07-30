@@ -15,6 +15,7 @@ fn handle_client(mut stream: TcpStream) {
                     // connection was closed
                     break;
                 }
+                stream.write(GREETING.as_bytes()).unwrap();
                 stream.write(&read[0..n]).unwrap();
             }
             Err(err) => {
