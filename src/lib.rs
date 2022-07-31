@@ -2,7 +2,10 @@ use std::iter::Peekable;
 
 #[cfg(test)]
 mod tests {
+    use crate::LexItem;
+
     use crate::get_number;
+    use crate::lex;
 
     #[test]
     fn it_works() {
@@ -16,10 +19,38 @@ mod tests {
 
         if let Some(&c) = iter.peek() {
             iter.next();
-            let num = get_number( c, &mut iter );
+            let num = get_number(c, &mut iter);
 
             assert_eq!(num, 99);
         }
+    }
+
+    #[test]
+    fn lex_works() {
+        let input = "(99 + 1) * 4".to_string();
+
+        let tokens: Result<Vec<LexItem>, String> = lex(&input);
+
+        let mut vec = Vec::new();
+
+        vec.push(LexItem::Paren('('));
+        vec.push(LexItem::Num(99));
+        vec.push(LexItem::Op('+'));
+        vec.push(LexItem::Num(1));
+        vec.push(LexItem::Paren(')'));
+        vec.push(LexItem::Op('*'));
+        vec.push(LexItem::Num(4));
+
+        let mut tokens_iter = tokens.unwrap().into_iter();
+
+        assert_eq!(Some(LexItem::Paren('(')), tokens_iter.next());
+        assert_eq!(Some(LexItem::Num(99)), tokens_iter.next());
+        assert_eq!(Some(LexItem::Op('+')), tokens_iter.next());
+        assert_eq!(Some(LexItem::Num(1)), tokens_iter.next());
+        assert_eq!(Some(LexItem::Paren(')')), tokens_iter.next());
+        assert_eq!(Some(LexItem::Op('*')), tokens_iter.next());
+        assert_eq!(Some(LexItem::Num(4)), tokens_iter.next());
+        assert_eq!(None, tokens_iter.next());
     }
 }
 
@@ -46,7 +77,7 @@ impl ParseNode {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum LexItem {
     Paren(char),
     Op(char),
@@ -84,7 +115,10 @@ fn lex(input: &String) -> Result<Vec<LexItem>, String> {
 }
 
 fn get_number<T: Iterator<Item = char>>(c: char, iter: &mut Peekable<T>) -> u64 {
-    let mut number = c.to_string().parse::<u64>().expect("The caller should have passed a digit.");
+    let mut number = c
+        .to_string()
+        .parse::<u64>()
+        .expect("The caller should have passed a digit.");
     while let Some(Ok(digit)) = iter.peek().map(|c| c.to_string().parse::<u64>()) {
         number = number * 10 + digit;
         iter.next();
