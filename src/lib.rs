@@ -31,16 +31,6 @@ mod tests {
 
         let tokens: Result<Vec<LexItem>, String> = lex(&input);
 
-        let mut vec = Vec::new();
-
-        vec.push(LexItem::Paren('('));
-        vec.push(LexItem::Num(99));
-        vec.push(LexItem::Op('+'));
-        vec.push(LexItem::Num(1));
-        vec.push(LexItem::Paren(')'));
-        vec.push(LexItem::Op('*'));
-        vec.push(LexItem::Num(4));
-
         let mut tokens_iter = tokens.unwrap().into_iter();
 
         assert_eq!(Some(LexItem::Paren('(')), tokens_iter.next());
