@@ -116,4 +116,38 @@ fn get_number<T: Iterator<Item = char>>(c: char, iter: &mut Peekable<T>) -> u64 
     number
 }
 
+pub fn parse(input: &String) -> Result<ParseNode, String> {
+    let tokens = lex(input)?;
+    parse_expr(&tokens, 0).and_then(|(n, i)| {
+        if i == tokens.len() {
+            Ok(n)
+        } else {
+            Err(format!(
+                "Expected end of input, found {:?} at {}",
+                tokens[i], i
+            ))
+        }
+    })
+}
+
+fn parse_expr(tokens: &Vec<LexItem>, pos: usize) -> Result<(ParseNode, usize), String> {
+    let (node_summand, next_pos) = parse_summand(tokens, pos)?;
+    let c = tokens.get(next_pos);
+    match c {
+        Some(&LexItem::Op('+')) => {
+            // recurse on the expr
+            let mut sum = ParseNode::new();
+            sum.entry = GrammarItem::Sum;
+            sum.children.push(node_summand);
+            let (rhs, i) = parse_expr(tokens, next_pos + 1)?;
+            sum.children.push(rhs);
+            Ok((sum, i))
+        }
+        _ => {
+            // we have just the summand production, nothing more.
+            Ok((node_summand, next_pos))
+        }
+    }
+}
+
 pub const GREETING: &'static str = "Hallo, Rust library here!\n";
