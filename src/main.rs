@@ -1,7 +1,11 @@
-use std::net::{TcpListener, TcpStream};
-use std::thread;
+extern crate pest;
+#[macro_use]
+extern crate pest_derive;
+
 use std::io::Read;
 use std::io::Write;
+use std::net::{TcpListener, TcpStream};
+use std::thread;
 
 use simpledb::GREETING;
 
@@ -11,7 +15,7 @@ fn handle_client(mut stream: TcpStream) {
         let mut read = [0; 1028];
         match stream.read(&mut read) {
             Ok(n) => {
-                if n == 0 { 
+                if n == 0 {
                     // connection was closed
                     break;
                 }
