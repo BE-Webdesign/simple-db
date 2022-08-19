@@ -9,6 +9,12 @@ use std::thread;
 
 use simpledb::GREETING;
 
+use pest::Parser;
+
+#[derive(Parser)]
+#[grammar = "csv.pest"]
+pub struct CSVParser;
+
 fn handle_client(mut stream: TcpStream) {
     // read 20 bytes at a time from stream echoing back to stream
     loop {
